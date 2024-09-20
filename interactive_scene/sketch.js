@@ -14,7 +14,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(400, 400, WEBGL);
+  createCanvas(800, 800, WEBGL);
 }
 
 
@@ -23,8 +23,8 @@ function screenSwitch() {
     background(0)
     fill(255)
     textFont(font)
-    text("press space", -90, -50)
-    text("to start", -90, -20)
+    text("press space", -width/4, -width/8)
+    text("to start", -width/4, -width/20)
     textSize(30)
     if (keyIsDown(32)) {
       state = "thing"
