@@ -15,6 +15,7 @@ function preload() {
 
 function setup() {
   createCanvas(800, 800, WEBGL);
+  angleMode(DEGREES);
 }
 
 
@@ -31,11 +32,27 @@ function screenSwitch() {
     }
 }
 }
-function draw() {
-  screenSwitch();
+
+function sphereThing() {
   if (state === "thing") {
     orbitControl();
     background(255)
-    sphere(100)
-  }
+    for(let z = 0; z < 180; z+=15) {
+      for(let x = 0; x < 360; x+=15) {
+        push();
+        rotateZ(z)
+        rotateX(x)
+        translate(0, height, 0)
+        box(150);
+        sphere(100);
+        torus(125);
+        pop();
+      }
+    }
+}
+}
+
+function draw(){
+  screenSwitch();
+  sphereThing();
 }
