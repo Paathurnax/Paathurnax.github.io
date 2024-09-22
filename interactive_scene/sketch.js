@@ -14,7 +14,7 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(800, 800, WEBGL);
+  createCanvas(1690, 870, WEBGL);
   angleMode(DEGREES);
 }
 
@@ -43,9 +43,12 @@ function sphereThing() {
         rotateZ(z)
         rotateX(x)
         translate(0, height, 0)
-        box(150);
-        sphere(100);
-        torus(125);
+        push();
+        fill("magenta")
+        sphere(200);
+        pop();
+        fill(0)
+        box(300);
         pop();
       }
     }
