@@ -8,9 +8,11 @@
 
 let state = "start";
 let font;
+let size = 100;
 
 function preload() {
   font = loadFont('Inconsolata.otf')
+
 }
 
 function setup() {
@@ -45,11 +47,14 @@ function sphereThing() {
         translate(0, height, 0)
         push();
         fill("magenta")
-        sphere(200);
+        sphere(size);
         pop();
         fill(0)
-        box(300);
+        box(size+50);
         pop();
+        if (keyTyped(87)) {
+          size = random(100, 500)
+        }
       }
     }
 }
