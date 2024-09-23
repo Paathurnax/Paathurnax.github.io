@@ -35,6 +35,7 @@ function screenSwitch() {
 }
 }
 
+
 function sphereThing() {
   if (state === "thing") {
     orbitControl();
@@ -46,15 +47,15 @@ function sphereThing() {
         rotateX(x)
         translate(0, height, 0)
         push();
-        fill("magenta")
+        fill("green")
         sphere(size);
         pop();
         fill(0)
-        box(size+50);
-        pop();
-        if (keyTyped(87)) {
+        if (keyIsDown(87)) {
           size = random(100, 500)
         }
+        box(size+75);
+        pop();
       }
     }
 }
