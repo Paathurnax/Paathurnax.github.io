@@ -1,6 +1,6 @@
 // Interactive Scene
 // Jacob Koshman
-// September ...
+// October 1st
 //
 // Extra for Experts:
 // - i used orbitcontrol to manipulate the perspective in a 3d plane using the mouse and i also used vectors
