@@ -3,30 +3,35 @@
 // September ...
 //
 // Extra for Experts:
-// - i used orbitcontrol to manipulate the perspective in a 3d plane using the mouse
+// - i used orbitcontrol to manipulate the perspective in a 3d plane using the mouse and i also used vectors
 
 
 let state = "start";
 let font;
-let size = 500;
-let dx = 3;
-let dy = 2;
-let dz = 1;
-let size2 = 50;
-let x = 0;
-let y = 0;
-let z = 0;
+let pos;
+let vel;
+let radius;
+let shapeSize;
+let iRanOutOfGoodNames;
+let r = 50;
+let g = 50;
+let b = 50;
 
 function preload() {
-  font = loadFont('Inconsolata.otf')
+ font = loadFont('Inconsolata.otf')
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-  angleMode(DEGREES);
+  pos = createVector(0, 0, 0);
+  vel = createVector(3, 4, 5);
+  shapeSize = 2000;
+  radius = shapeSize/10
+  iRanOutOfGoodNames = shapeSize/2 - radius;
+
 }
 
-
+//change what is displayed based on a state variable
 function screenSwitch() {
   if (state === "start") {
     background(255, 0, 255)
@@ -42,71 +47,60 @@ function screenSwitch() {
 }
 }
 
-// function sphereThing() {
-//   if (state === "thing") {
-//     orbitControl();
-//     background(255)
-//     for(let z = 0; z < 180; z+=15) {
-//       for(let x = 0; x < 360; x+=15) {
-//         push();
-//         rotateZ(z)
-//         rotateX(x)
-//         translate(0, height, 0)
-//         push();
-//         fill("green")
-//         sphere(size);
-//         pop();
-//         fill(0)
-//         box(size+75);
-//         pop();
-//       }
-//     }
-// }
-// }
+//creates a box
 function makeBox() {
-  background(255)
-  orbitControl();
   noFill();
-  box(size)
-  rotateX(20)
+  stroke(100);
+  strokeWeight(5)
+  box(shapeSize) 
 }
 
-
+//makes ball go boing
 function bounce() {
-  if (x>= size - size2/2 || x<=size2/2) {
-    dx = dx * -1
-    console.log("xbounce")
+  if (pos.x > iRanOutOfGoodNames || pos.x < -iRanOutOfGoodNames) {
+    vel.x *= -1;
   }
-  if (y>= size - size2/2 || y<=size2/2) {
-    dy = dy * -1
-    console.log("ybounce")
+  if (pos.y > iRanOutOfGoodNames || pos.y < -iRanOutOfGoodNames) {
+    vel.y *= -1;
   }
-  if (z>= size - size2/2 || z<=size2/2) {
-    dz = dz * -1
-    console.log("zbounce")
+  if (pos.z > iRanOutOfGoodNames || pos.z < -iRanOutOfGoodNames) {
+    vel.z *= -1;
   }
 }
 
+// moves the ball
 function moveBall() {
-  x+=dx
-  y+=dy
-  z+=dz
+  pos.add(vel);
 }
 
+//creates the sphere 
 function displayBall() {
   push();
-  fill(0)
-  translate(0, height, 0)
-  sphere(size2)
+  fill(r, g, b);
+  noStroke();
+  translate(pos.x, pos.y, pos.z);
+  sphere(radius)
   pop();
 }
 
-function draw(){
+//changing the color of the sphere to a random value based on a key press
+function keyPressed() {
+  if (key === "w") {
+    r = random(50, 200)
+    g = random(50, 200)
+    b = random(50, 200)
+    console.log(r, g, b)
+  }
+}
+
+function draw() {
   screenSwitch();
 if (state === "thing") {
-  displayBall();
-  makeBox();
+  background(0)
+  orbitControl();
   bounce();
   moveBall();
+  makeBox();
+  displayBall();
 }
 }
