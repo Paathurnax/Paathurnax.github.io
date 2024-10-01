@@ -3,7 +3,7 @@
 // October 1st
 //
 // Extra for Experts:
-// - i used orbitcontrol to manipulate the perspective in a 3d plane using the mouse and i also used vectors
+// - i used orbitcontrol to manipulate the perspective in a 3d plane using the mouse
 
 
 let state = "start";
@@ -17,10 +17,14 @@ let r = 50;
 let g = 50;
 let b = 50;
 
+
+//preloading the font
 function preload() {
  font = loadFont('Inconsolata.otf')
 }
 
+
+//setting up the canvas and initializing the vectors
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   pos = createVector(0, 0, 0);
@@ -34,7 +38,7 @@ function setup() {
 //change what is displayed based on a state variable
 function screenSwitch() {
   if (state === "start") {
-    background(255, 0, 255)
+    background(0)
     fill(255)
     textFont(font)
     textAlign(CENTER, CENTER)
@@ -93,6 +97,8 @@ function keyPressed() {
   }
 }
 
+
+//running the functions
 function draw() {
   screenSwitch();
 if (state === "thing") {
