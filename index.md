@@ -4,6 +4,7 @@
 - [Moving Square](moving_square)
 - [Image Demo](image_demo)
 - [Traffic Lights](traffic_lights)
+- [Bouncing Balls](bouncing_balls)
 
 ## Projects
 - [Interactive Scene](interactive_scene)
