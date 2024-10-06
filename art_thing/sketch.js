@@ -1,7 +1,7 @@
 //Generative Art Demo
 //October 4th
 
-const TILE_SIZE = 5;
+const TILE_SIZE = 10;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -19,7 +19,7 @@ function draw() {
 
   for (let myTile of arr) {
     stroke(myTile.r, myTile.g, myTile.b)
-    rect(myTile.x1, myTile.y1, myTile.x2, myTile.y2);
+    line(myTile.x1, myTile.y1, myTile.x2, myTile.y2);
   }
 }
 
