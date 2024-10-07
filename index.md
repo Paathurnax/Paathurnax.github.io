@@ -6,6 +6,7 @@
 - [Traffic Lights](traffic_lights)
 - [Bouncing Balls](bouncing_balls)
 - [Generative Art](art_thing)
+- [Perlin Noise Ball](perlin)
 
 ## Projects
 - [Interactive Scene](interactive_scene)
