@@ -31,6 +31,15 @@ function makeBall() {
   circle(x, y, radius);
 }
 
+function moveBall() {
+  if (keyIsDown(68) && x<width-radius) {
+    x+=10;
+  }
+  if (keyIsDown(65) && x>radius) {
+    x-=10;
+  }
+}
+
 function spawnRect(left, rectHeight, rectWidth) {
   let theRect = {
     x: left,
