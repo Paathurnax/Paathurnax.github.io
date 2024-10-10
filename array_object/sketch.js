@@ -20,6 +20,7 @@ function setup() {
 function draw() {
   background(220);
   makeBall();
+  moveBall();
 
   for(let someRect of terrain) {
     rect(someRect.x, someRect.y, someRect.w, someRect.h);
@@ -28,7 +29,7 @@ function draw() {
 }
 
 function makeBall() {
-  circle(x, y, radius);
+  circle(x, terrain.y, radius);
 }
 
 function moveBall() {
@@ -46,7 +47,6 @@ function spawnRect(left, rectHeight, rectWidth) {
     y: height - rectHeight,
     w: rectWidth,
     h: rectHeight,
-    y2: height - rectHeight,
   };
   return theRect;
 }
