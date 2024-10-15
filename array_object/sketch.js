@@ -6,9 +6,10 @@
 // 
 
 let terrain = [];
-let x = 25;
-let y = 25;
+let ballX = 25;
+let y;
 let radius = 25;
+let counter = 0;
 const NUMBER_OF_RECTS = 1000;
 
 function setup() {
@@ -19,25 +20,27 @@ function setup() {
 
 function draw() {
   background(220);
-  makeBall();
   moveBall();
 
   for(let someRect of terrain) {
     rect(someRect.x, someRect.y, someRect.w, someRect.h);
-
   }
+  if (counter === 0) {
+    circle(ballX, y - radius/2, radius);
+  }
+  counter++;
 }
 
-function makeBall() {
-  circle(x, terrain.y, radius);
-}
+// function makeBall() {
+  
+// }
 
 function moveBall() {
-  if (keyIsDown(68) && x<width-radius) {
-    x+=10;
+  if (keyIsDown(68) && ballX<width-radius/2) {
+    ballX+=10;
   }
-  if (keyIsDown(65) && x>radius) {
-    x-=10;
+  if (keyIsDown(65) && ballX>radius/2) {
+    ballX-=10;
   }
 }
 
@@ -58,6 +61,7 @@ function generateTerrain(theWidth) {
     let theHeight = noise(time) * height;
     let someRect = spawnRect(x, theHeight, theWidth);
     terrain.push(someRect);
+    y = terrain.y;
     time+=deltaTime;
   }
 }
