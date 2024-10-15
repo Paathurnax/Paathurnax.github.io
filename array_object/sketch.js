@@ -6,62 +6,54 @@
 // 
 
 let terrain = [];
-let ballX = 25;
-let y;
-let radius = 25;
-let counter = 0;
-const NUMBER_OF_RECTS = 1000;
+let x = 10;
+// let ballX = 25;
+// let y;
+// let radius = 25;
+// let counter = 0;
+const NUMBER_OF_BOXES = 1;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  let howWide = width/NUMBER_OF_RECTS;
+  createCanvas(windowWidth, windowHeight, WEBGL);
+  let howWide = width/NUMBER_OF_BOXES;
   generateTerrain(howWide);
 }
 
 function draw() {
   background(220);
-  moveBall();
+  orbitControl();
+  // moveBall();
 
-  for(let someRect of terrain) {
-    rect(someRect.x, someRect.y, someRect.w, someRect.h);
+  for(let someBox of terrain) {
+    box(someBox.y, someBox.x, someBox.d);
   }
-  if (counter === 0) {
-    circle(ballX, y - radius/2, radius);
-  }
-  counter++;
 }
 
 // function makeBall() {
-  
+//   circle(ballX, y, radius);
 // }
 
-function moveBall() {
-  if (keyIsDown(68) && ballX<width-radius/2) {
-    ballX+=10;
-  }
-  if (keyIsDown(65) && ballX>radius/2) {
-    ballX-=10;
-  }
-}
+// function moveBall() {
+//   if (keyIsDown(68) && ballX<width-radius/2) {
+//     ballX+=10;
+//   }
+//   if (keyIsDown(65) && ballX>radius/2) {
+//     ballX-=10;
+//   }
+// }
 
-function spawnRect(left, rectHeight, rectWidth) {
-  let theRect = {
+function spawnBox(left, boxHeight, boxWidth) {
+  let theBox = {
     x: left,
-    y: height - rectHeight,
-    w: rectWidth,
-    h: rectHeight,
+    y: boxHeight,
+    d: boxWidth,
   };
-  return theRect;
+  return theBox;
 }
 
 function generateTerrain(theWidth) {
-  let time = 0;
-  let deltaTime = 0.005;
-  for(let x =0; x<width; x+=theWidth) {
-    let theHeight = noise(time) * height;
-    let someRect = spawnRect(x, theHeight, theWidth);
-    terrain.push(someRect);
-    y = terrain.y;
-    time+=deltaTime;
-  }
+  // for(let x = 0; x<width; x+=theWidth) {
+  let someBox = spawnBox(x, theWidth, theWidth);
+  terrain.push(someBox);
+  //}
 }
