@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../terrain"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "array_object"
+	}
+}
