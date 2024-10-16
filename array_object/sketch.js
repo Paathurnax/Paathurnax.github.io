@@ -25,7 +25,7 @@ function draw() {
   // moveBall();
 
   for(let someBox of terrain) {
-    box(someBox.y, someBox.x, someBox.d);
+    box(someBox.x, someBox.y, someBox.d);
   }
 }
 
@@ -44,8 +44,8 @@ function draw() {
 
 function spawnBox(left, boxHeight, boxWidth) {
   let theBox = {
-    x: left,
-    y: boxHeight,
+    y: left,
+    x: boxHeight,
     d: boxWidth,
   };
   return theBox;
