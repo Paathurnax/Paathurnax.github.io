@@ -42,11 +42,11 @@ function draw() {
 //   }
 // }
 
-function spawnBox(left, boxHeight, boxWidth) {
+function spawnBox(boxHeight, boxWidth, boxDepth) {
   let theBox = {
-    y: left,
-    x: boxHeight,
-    d: boxWidth,
+    x: boxWidth,
+    y: boxHeight,
+    d: boxDepth,
   };
   return theBox;
 }
