@@ -7,11 +7,16 @@
 
 let terrain = [];
 let x = 10;
+let text;
 // let ballX = 25;
 // let y;
 // let radius = 25;
 // let counter = 0;
 const NUMBER_OF_BOXES = 1;
+
+function preload() {
+  text = loadFont("Inconsolata.otf");
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
