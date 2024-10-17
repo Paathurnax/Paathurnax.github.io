@@ -7,58 +7,120 @@
 
 let terrain = [];
 let x = 10;
-let text;
-// let ballX = 25;
-// let y;
-// let radius = 25;
-// let counter = 0;
-const NUMBER_OF_BOXES = 1;
+let textFont;
+let base;
+let ball;
 
 function preload() {
-  text = loadFont("Inconsolata.otf");
+  textFont = loadFont("Inconsolata.otf");
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-  let howWide = width/NUMBER_OF_BOXES;
-  generateTerrain(howWide);
+  base = new Base(0, -150, 0, 300, 10, 300);
+  ball = new Ball(0, 0, 0, 10);
 }
 
 function draw() {
   background(220);
   orbitControl();
-  // moveBall();
+  scale(1, -1, 1);
+  base.rotation();
+  base.displayBox();
+  ball.rollOn(base);
+  ball.fallFrom(base);
+  ball.updatePosition();
+  ball.displayOn(base);
+}
 
-  for(let someBox of terrain) {
-    box(someBox.x, someBox.y, someBox.d);
+class Base {
+  constructor(x, y, z, w, h, d) {
+    this.pos = createVector(x, y, z);
+    this.rot = createVector(0, 0, 0);
+
+    this.w = w;
+    this.h = h;
+    this.d = d;
+  }
+  rotation() {
+    if (keyIsPressed) {
+      if (keyCode === UP_ARROW) {
+        this.rot.x -= 0.01;
+      }
+      else if(keyCode === DOWN_ARROW) {
+        this.rot.x += 0.01;
+      }
+      else if(keyCode === LEFT_ARROW) {
+        this.rot.z += 0.01;
+      }
+      else if(keyCode === RIGHT_ARROW) {
+        this.rot.z -= 0.01;
+      }
+    }
+  }
+
+  displayBox() {
+    push();
+    translate(this.pos.x, this.pos.y, this.pos.z);
+    translate(0, -this.h/2, 0);
+    rotateX(this.rot.x);
+    rotateZ(this.rot.z);
+    box(this.w, this.h, this.d);
+    pop();
   }
 }
 
-// function makeBall() {
-//   circle(ballX, y, radius);
-// }
-
-// function moveBall() {
-//   if (keyIsDown(68) && ballX<width-radius/2) {
-//     ballX+=10;
-//   }
-//   if (keyIsDown(65) && ballX>radius/2) {
-//     ballX-=10;
-//   }
-// }
-
-function spawnBox(boxHeight, boxWidth, boxDepth) {
-  let theBox = {
-    x: boxWidth,
-    y: boxHeight,
-    d: boxDepth,
-  };
-  return theBox;
-}
-
-function generateTerrain(theWidth) {
-  // for(let x = 0; x<width; x+=theWidth) {
-  let someBox = spawnBox(x, theWidth, theWidth);
-  terrain.push(someBox);
-  //}
+class Ball {
+  constructor(x, y, z, r) {
+    this.pos = createVector(x, y, z);
+    this.vel = createVector(0, 0, 0);
+    this.acc = createVector();
+    this.rad = r;
+    this.mass = 1;
+  }
+  rollOn(platform) {
+    let force = createVector(-platform.rot.z, 0, platform.rot.x);
+    force.mult(0.2);
+    this.applyForce(force);
+  }
+  fallFrom(platform) {
+    if (
+      this.pos.x < -platform.w / 2 ||
+      this.pos.x > platform.w / 2 ||
+      this.pos.z < -platform.d / 2 ||
+      this.pos.z > platform.d / 2
+    ) {
+      let gravity = createVector(0, -1, 0);
+      this.applyForce(gravity);
+    }
+  }
+  updatePosition() {
+    this.vel.add(this.acc);
+    this.pos.add(this.vel);
+    this.acc.mult(0);
+  }
+  applyForce(f) {
+    if (this.mass <= 0) {
+      console.log("Wrong mass!");
+      return;
+    }
+    let force = p5.Vector.div(f, this.mass);
+    this.acc.add(force); // force accumulation
+  }
+  adjustVelocity(amount) {
+    //Coefficient of Restitution
+    this.vel.mult(1 + amount);
+  }
+  displayOn(platform) {
+    push();
+    translate(platform.pos.x, platform.pos.y, platform.pos.z);
+    rotateX(platform.rot.x);
+    rotateZ(platform.rot.z);
+    
+    translate(0, this.rad, 0);
+    translate(this.pos.x, this.pos.y, this.pos.z);
+    sphere(this.rad, 12, 12);
+    
+    pop();
+  }
 }
