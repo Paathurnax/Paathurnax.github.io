@@ -1,36 +1,41 @@
 // Arrays and Object Notation Assignment
 // Jacob Koshman
-// October...
+// October 21, 2024
 //
 // Extra for Experts:
-// 
+// used classes
 
 let terrain = [];
 let x = 10;
 let textFont;
 let base;
 let ball;
+let state;
+let textArr = [];
 
 function preload() {
   textFont = loadFont("Inconsolata.otf");
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight, WEBGL);
+  createCanvas(windowWidth, windowHeight-25, WEBGL);
   base = new Base(0, -150, 0, 300, 10, 300);
   ball = new Ball(0, 0, 0, 10);
 }
 
 function draw() {
   background(220);
-  orbitControl();
-  scale(1, -1, 1);
-  base.rotation();
-  base.displayBox();
-  ball.rollOn(base);
-  ball.fallFrom(base);
-  ball.updatePosition();
-  ball.displayOn(base);
+  if (state === start_thing) {
+    orbitControl();
+    scale(1, -1, 1);
+    base.rotation();
+    base.displayBox();
+    ball.rollOn(base);
+    ball.fallFrom(base);
+    ball.updatePosition();
+    ball.displayOn(base);
+  }
+  
 }
 
 class Base {
@@ -78,17 +83,17 @@ class Ball {
     this.rad = r;
     this.mass = 1;
   }
-  rollOn(platform) {
-    let force = createVector(-platform.rot.z, 0, platform.rot.x);
+  rollOn(area) {
+    let force = createVector(-area.rot.z, 0, area.rot.x);
     force.mult(0.2);
     this.applyForce(force);
   }
-  fallFrom(platform) {
+  fallFrom(area) {
     if (
-      this.pos.x < -platform.w / 2 ||
-      this.pos.x > platform.w / 2 ||
-      this.pos.z < -platform.d / 2 ||
-      this.pos.z > platform.d / 2
+      this.pos.x < -area.w / 2 ||
+      this.pos.x > area.w / 2 ||
+      this.pos.z < -area.d / 2 ||
+      this.pos.z > area.d / 2
     ) {
       let gravity = createVector(0, -1, 0);
       this.applyForce(gravity);
@@ -108,14 +113,13 @@ class Ball {
     this.acc.add(force); // force accumulation
   }
   adjustVelocity(amount) {
-    //Coefficient of Restitution
     this.vel.mult(1 + amount);
   }
-  displayOn(platform) {
+  displayOn(area) {
     push();
-    translate(platform.pos.x, platform.pos.y, platform.pos.z);
-    rotateX(platform.rot.x);
-    rotateZ(platform.rot.z);
+    translate(area.pos.x, area.pos.y, area.pos.z);
+    rotateX(area.rot.x);
+    rotateZ(area.rot.z);
     
     translate(0, this.rad, 0);
     translate(this.pos.x, this.pos.y, this.pos.z);
