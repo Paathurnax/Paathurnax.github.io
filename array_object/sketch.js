@@ -10,8 +10,11 @@ let x = 10;
 let textFont;
 let base;
 let ball;
-let state;
+let state = "title";
+let button;
 let textArr = [];
+
+
 
 function preload() {
   textFont = loadFont("Inconsolata.otf");
@@ -19,25 +22,52 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight-25, WEBGL);
+
+  if (state === "title") {
+    button = createButton("click me to start!");
+    button.position(width/2, height/2);
+    button.mousePressed(changeState)
+  }
+
   base = new Base(0, -150, 0, 300, 10, 300);
   ball = new Ball(0, 0, 0, 10);
 }
 
 function draw() {
   background(220);
-  if (state === start_thing) {
+  stateStuff();
+  
+}
+
+//runs if the start button is clicked
+function stateStuff() {
+  if (state === "start") {
+    //lets the user manipulate the perspective
     orbitControl();
+
+    //flips the y axis
     scale(1, -1, 1);
+
+    //creates the base and places it where it should be
     base.rotation();
     base.displayBox();
+
+    //creates the ball and runs its class functions
     ball.rollOn(base);
     ball.fallFrom(base);
     ball.updatePosition();
     ball.displayOn(base);
   }
-  
 }
 
+
+//changes the state on button press
+function changeState() {
+  state = "start";
+}
+
+
+//creates the base and applys rotation on key press
 class Base {
   constructor(x, y, z, w, h, d) {
     this.pos = createVector(x, y, z);
@@ -75,6 +105,8 @@ class Base {
   }
 }
 
+
+//creates ball and applys physics
 class Ball {
   constructor(x, y, z, r) {
     this.pos = createVector(x, y, z);
