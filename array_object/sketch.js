@@ -5,36 +5,39 @@
 // Extra for Experts:
 // used classes
 
-let terrain = [];
-let x = 10;
+
 let textFont;
 let base;
 let ball;
 let state = "title";
 let button;
-let textArr = [];
+let button2;
+let colorArray = [];
+let count = 0;
 
 
 
 function preload() {
+  //loading text font
   textFont = loadFont("Inconsolata.otf");
 }
 
 function setup() {
-  createCanvas(windowWidth, windowHeight-25, WEBGL);
+  createCanvas(windowWidth, windowHeight, WEBGL);
 
+  //initial screen
   if (state === "title") {
     button = createButton("click me to start!");
-    button.position(width/2, height/2);
-    button.mousePressed(changeState)
+    button.show();
+    button.center();
+    button.mousePressed(changeState);
   }
-
+  //intializing the objects
   base = new Base(0, -150, 0, 300, 10, 300);
   ball = new Ball(0, 0, 0, 10);
 }
 
 function draw() {
-  background(220);
   stateStuff();
   
 }
@@ -42,6 +45,13 @@ function draw() {
 //runs if the start button is clicked
 function stateStuff() {
   if (state === "start") {
+
+    //changes the background color
+    bgColor();
+
+    //hides the button
+    button.hide();
+
     //lets the user manipulate the perspective
     orbitControl();
 
@@ -66,6 +76,22 @@ function changeState() {
   state = "start";
 }
 
+//randomizes the background color
+function bgColor() {
+  let color = {
+    r: 67,
+    g: 86,
+    b: 123,
+  };
+  colorArray.push(color);
+  changeColor(colorArray[0], colorArray[1], colorArray[2]);
+}
+
+
+//changes the color
+function changeColor(r, g, b) {
+  background(r, g, b);
+}
 
 //creates the base and applys rotation on key press
 class Base {
