@@ -11,17 +11,24 @@ let ball;
 let state = "title";
 let button;
 let button2;
+let button3;
 let cam;
 let colorArray = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
 
+  //sets the initial background color
+  background(255);
+  
   //title screen + start button
   firstButton();
 
   //return ball button
   secondButton();
+
+  //change background color button
+  thirdButton();
   
   //intializing the objects
   createBase();
@@ -35,13 +42,13 @@ function draw() {
 //runs if the start button is clicked
 function stateStuff() {
   if (state === "start") {
+
     //shows the second button
     button2.show();
 
-    //changes the background color
-    bgColor();
-    changeColor();
-
+    //shows the third button
+    button3.show();
+    
     //hides the first button
     button.hide();
 
@@ -75,7 +82,7 @@ function createCam() {
   cam.setPosition(0, 0, 800);
 }
 
-//create the first button
+//creates the first button
 function firstButton() {
   if (state === "title") {
     button = createButton("click to start!");
@@ -87,7 +94,7 @@ function firstButton() {
   }
 }
 
-//create the second button
+//creates the second button
 function secondButton() {
   button2 = createButton("Return Ball");
   button2.hide();
@@ -95,7 +102,15 @@ function secondButton() {
   button2.mousePressed(createBall);
 }
 
-//randomizes the background color
+//creates the third button
+function thirdButton() {
+  button3 = createButton("Change Background Color");
+  button3.hide();
+  button3.position(width-100, height-100);
+  button3.mousePressed(actuallyChangeColor);
+}
+
+//randomizes the background rgb values
 function bgColor() {
   let color = {
     r: random(255),
@@ -106,11 +121,17 @@ function bgColor() {
 }
 
 
-//changes the color
+//changes the background color
 function changeColor() {
   for (let colors of colorArray) {
     background(colors.r, colors.g, colors.b);
   }
+}
+
+//actually changes the color
+function actuallyChangeColor() {
+  bgColor();
+  changeColor();
 }
 
 //creates the base
@@ -198,7 +219,7 @@ class Ball {
       return;
     }
     let force = p5.Vector.div(f, this.mass);
-    this.acc.add(force); // force accumulation
+    this.acc.add(force);
   }
   adjustVelocity(amount) {
     this.vel.mult(1 + amount);
