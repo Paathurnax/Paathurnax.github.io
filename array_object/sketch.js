@@ -3,57 +3,50 @@
 // October 21, 2024
 //
 // Extra for Experts:
-// used classes
+// used classes and cameras + buttons
 
 
-let textFont;
 let base;
 let ball;
 let state = "title";
 let button;
 let button2;
+let cam;
 let colorArray = [];
-let count = 0;
-
-
-
-function preload() {
-  //loading text font
-  textFont = loadFont("Inconsolata.otf");
-}
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
 
-  //initial screen
-  if (state === "title") {
-    button = createButton("click me to start!");
-    button.show();
-    button.center();
-    button.mousePressed(changeState);
-  }
+  //title screen + start button
+  firstButton();
+
+  //return ball button
+  secondButton();
+  
   //intializing the objects
-  base = new Base(0, -150, 0, 300, 10, 300);
-  ball = new Ball(0, 0, 0, 10);
+  createBase();
+  createBall();
 }
 
 function draw() {
   stateStuff();
-  
 }
 
 //runs if the start button is clicked
 function stateStuff() {
   if (state === "start") {
+    //shows the second button
+    button2.show();
 
     //changes the background color
     bgColor();
+    changeColor();
 
-    //hides the button
+    //hides the first button
     button.hide();
 
     //lets the user manipulate the perspective
-    orbitControl();
+    createCam();
 
     //flips the y axis
     scale(1, -1, 1);
@@ -76,21 +69,58 @@ function changeState() {
   state = "start";
 }
 
+//create the perspective
+function createCam() {
+  cam = createCamera();
+  cam.setPosition(0, 0, 800);
+}
+
+//create the first button
+function firstButton() {
+  if (state === "title") {
+    button = createButton("click to start!");
+    button.size(500, 250);
+    button.style("font-size", "50px");
+    button.show();
+    button.center();
+    button.mousePressed(changeState);
+  }
+}
+
+//create the second button
+function secondButton() {
+  button2 = createButton("Return Ball");
+  button2.hide();
+  button2.position(width-100, height-50);
+  button2.mousePressed(createBall);
+}
+
 //randomizes the background color
 function bgColor() {
   let color = {
-    r: 67,
-    g: 86,
-    b: 123,
+    r: random(255),
+    g: random(255),
+    b: random(255),
   };
   colorArray.push(color);
-  changeColor(colorArray[0], colorArray[1], colorArray[2]);
 }
 
 
 //changes the color
-function changeColor(r, g, b) {
-  background(r, g, b);
+function changeColor() {
+  for (let colors of colorArray) {
+    background(colors.r, colors.g, colors.b);
+  }
+}
+
+//creates the base
+function createBase() {
+  base = new Base(0, -150, 0, 300, 10, 300);
+}
+
+//creates the ball
+function createBall() {
+  ball = new Ball(0, 0, 0, 10);
 }
 
 //creates the base and applys rotation on key press
@@ -105,16 +135,16 @@ class Base {
   }
   rotation() {
     if (keyIsPressed) {
-      if (keyCode === UP_ARROW) {
+      if (keyCode === UP_ARROW && this.rot.x>-0.50) {
         this.rot.x -= 0.01;
       }
-      else if(keyCode === DOWN_ARROW) {
+      else if(keyCode === DOWN_ARROW && this.rot.x<0.50) {
         this.rot.x += 0.01;
       }
-      else if(keyCode === LEFT_ARROW) {
+      else if(keyCode === LEFT_ARROW && this.rot.z<0.50) {
         this.rot.z += 0.01;
       }
-      else if(keyCode === RIGHT_ARROW) {
+      else if(keyCode === RIGHT_ARROW && this.rot.z>-0.50) {
         this.rot.z -= 0.01;
       }
     }
