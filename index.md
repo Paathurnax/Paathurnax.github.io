@@ -10,6 +10,7 @@
 - [Terrain Generation](terrain)
 - [Bubble Object](bubble)
 - [Sound Effects](sound)
+- [Grid Demo](grid)
 
 ## Projects
 - [Interactive Scene](interactive_scene)
