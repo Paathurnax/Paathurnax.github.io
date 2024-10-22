@@ -16,7 +16,6 @@ let objectColorChangeButton;
 let baseResetButton;
 let cam;
 let colorArray = [];
-let delay = 10000;
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
@@ -26,6 +25,9 @@ function setup() {
   ballButton();
   objectColorButton();
   baseButton();
+
+  //tells the user how to manipulate the base
+  alert("use the arrow keys to tilt the base");
   
   //intializing the objects
   createBase();
@@ -33,6 +35,7 @@ function setup() {
 }
 
 function draw() {
+  //sets the background color and implements the state variable "start"
   background(0);
   stateStuff();
 }
@@ -54,7 +57,7 @@ function stateStuff() {
     baseResetButton.show();
     
 
-    //lets the user manipulate the perspective
+    //creates a perspective "shot" of the 3d environment
     createCam();
 
     //flips the y axis
@@ -107,7 +110,7 @@ function ballButton() {
 function objectColorButton() {
   objectColorChangeButton = createButton("Change Color");
   objectColorChangeButton.hide();
-  objectColorChangeButton.position(width/4, height/2.1);
+  objectColorChangeButton.position(width/4, height/2 + 35);
   objectColorChangeButton.mouseClicked(actuallyChangeColor);
 }
 
@@ -115,7 +118,7 @@ function objectColorButton() {
 function baseButton() {
   baseResetButton = createButton("Reset Base");
   baseResetButton.hide();
-  baseResetButton.position(width/4, height/2.2);
+  baseResetButton.position(width/4, height/2 + 70);
   baseResetButton.mouseClicked(createBase);
 }
 
@@ -169,13 +172,13 @@ class Base {
       if (keyCode === UP_ARROW && this.rotate.x>-0.50) {
         this.rotate.x -= 0.01;
       }
-      else if(keyCode === DOWN_ARROW && this.rotate.x<0.50) {
+      else if (keyCode === DOWN_ARROW && this.rotate.x<0.50) {
         this.rotate.x += 0.01;
       }
-      else if(keyCode === LEFT_ARROW && this.rotate.z<0.50) {
+      else if (keyCode === LEFT_ARROW && this.rotate.z<0.50) {
         this.rotate.z += 0.01;
       }
-      else if(keyCode === RIGHT_ARROW && this.rotate.z>-0.50) {
+      else if (keyCode === RIGHT_ARROW && this.rotate.z>-0.50) {
         this.rotate.z -= 0.01;
       }
     }
@@ -205,19 +208,19 @@ class Ball {
   }
 
   //rolling the ball
-  rollOn(area) {
-    let force = createVector(-area.rotate.z, 0, area.rotate.x);
+  rollOn(floor) {
+    let force = createVector(-floor.rotate.z, 0, floor.rotate.x);
     force.mult(0.2);
     this.applyForce(force);
   }
 
   //gravity
-  fallFrom(area) {
+  fallFrom(floor) {
     if (
-      this.position.x < -area.w / 2 ||
-      this.position.x > area.w / 2 ||
-      this.position.z < -area.d / 2 ||
-      this.position.z > area.d / 2
+      this.position.x < -floor.w / 2 ||
+      this.position.x > floor.w / 2 ||
+      this.position.z < -floor.d / 2 ||
+      this.position.z > floor.d / 2
     ) {
       let gravity = createVector(0, -1, 0);
       this.applyForce(gravity);
@@ -237,6 +240,7 @@ class Ball {
       console.log("Wrong mass!");
       return;
     }
+
     let force = p5.Vector.div(f, this.mass);
     this.acceleration.add(force);
   }
@@ -247,11 +251,11 @@ class Ball {
   }
 
   //displays the ball properly
-  displayOn(area) {
+  displayOn(floor) {
     push();
-    translate(area.position.x, area.position.y, area.position.z);
-    rotateX(area.rotate.x);
-    rotateZ(area.rotate.z);
+    translate(floor.position.x, floor.position.y, floor.position.z);
+    rotateX(floor.rotate.x);
+    rotateZ(floor.rotate.z);
     translate(0, this.radius, 0);
     translate(this.position.x, this.position.y, this.position.z);
     sphere(this.radius, 12, 12);
