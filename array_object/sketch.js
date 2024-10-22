@@ -6,29 +6,26 @@
 // used classes and cameras + buttons
 
 
+//initializing the variables
 let base;
 let ball;
 let state = "title";
-let button;
-let button2;
-let button3;
+let startButton;
+let ballResetButton;
+let objectColorChangeButton;
+let baseResetButton;
 let cam;
 let colorArray = [];
+let delay = 10000;
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-
-  //sets the initial background color
-  background(255);
   
-  //title screen + start button
-  firstButton();
-
-  //return ball button
-  secondButton();
-
-  //change background color button
-  thirdButton();
+  //creating and initializing the buttons
+  startScreenButton();
+  ballButton();
+  objectColorButton();
+  baseButton();
   
   //intializing the objects
   createBase();
@@ -36,6 +33,7 @@ function setup() {
 }
 
 function draw() {
+  background(0);
   stateStuff();
 }
 
@@ -43,14 +41,18 @@ function draw() {
 function stateStuff() {
   if (state === "start") {
 
+    //hides the first button
+    startButton.hide();
+
     //shows the second button
-    button2.show();
+    ballResetButton.show();
 
     //shows the third button
-    button3.show();
+    objectColorChangeButton.show();
+
+    //shows the fourth button
+    baseResetButton.show();
     
-    //hides the first button
-    button.hide();
 
     //lets the user manipulate the perspective
     createCam();
@@ -70,7 +72,6 @@ function stateStuff() {
   }
 }
 
-
 //changes the state on button press
 function changeState() {
   state = "start";
@@ -83,35 +84,43 @@ function createCam() {
 }
 
 //creates the first button
-function firstButton() {
+function startScreenButton() {
   if (state === "title") {
-    button = createButton("click to start!");
-    button.size(500, 250);
-    button.style("font-size", "50px");
-    button.show();
-    button.center();
-    button.mousePressed(changeState);
+    startButton = createButton("click to start!");
+    startButton.size(500, 250);
+    startButton.style("font-size", "50px");
+    startButton.show();
+    startButton.center();
+    startButton.mouseClicked(changeState);
   }
 }
 
 //creates the second button
-function secondButton() {
-  button2 = createButton("Return Ball");
-  button2.hide();
-  button2.position(width-100, height-50);
-  button2.mousePressed(createBall);
+function ballButton() {
+  ballResetButton = createButton("Return Ball");
+  ballResetButton.hide();
+  ballResetButton.position(width/4, height/2);
+  ballResetButton.mouseClicked(createBall);
 }
 
 //creates the third button
-function thirdButton() {
-  button3 = createButton("Change Background Color");
-  button3.hide();
-  button3.position(width-100, height-100);
-  button3.mousePressed(actuallyChangeColor);
+function objectColorButton() {
+  objectColorChangeButton = createButton("Change Color");
+  objectColorChangeButton.hide();
+  objectColorChangeButton.position(width/4, height/2.1);
+  objectColorChangeButton.mouseClicked(actuallyChangeColor);
 }
 
-//randomizes the background rgb values
-function bgColor() {
+//creates the fourth button
+function baseButton() {
+  baseResetButton = createButton("Reset Base");
+  baseResetButton.hide();
+  baseResetButton.position(width/4, height/2.2);
+  baseResetButton.mouseClicked(createBase);
+}
+
+//randomizes the objects rgb values
+function objectColor() {
   let color = {
     r: random(255),
     g: random(255),
@@ -120,17 +129,16 @@ function bgColor() {
   colorArray.push(color);
 }
 
-
-//changes the background color
+//changes the objects color
 function changeColor() {
   for (let colors of colorArray) {
-    background(colors.r, colors.g, colors.b);
+    fill(colors.r, colors.g, colors.b);
   }
 }
 
-//actually changes the color
+//both color functions put together to make my life easier
 function actuallyChangeColor() {
-  bgColor();
+  objectColor();
   changeColor();
 }
 
@@ -144,39 +152,42 @@ function createBall() {
   ball = new Ball(0, 0, 0, 10);
 }
 
-//creates the base and applys rotation on key press
+//creates the base
 class Base {
   constructor(x, y, z, w, h, d) {
-    this.pos = createVector(x, y, z);
-    this.rot = createVector(0, 0, 0);
+    this.position = createVector(x, y, z);
+    this.rotate = createVector(0, 0, 0);
 
     this.w = w;
     this.h = h;
     this.d = d;
   }
+
+  //rotates the base
   rotation() {
     if (keyIsPressed) {
-      if (keyCode === UP_ARROW && this.rot.x>-0.50) {
-        this.rot.x -= 0.01;
+      if (keyCode === UP_ARROW && this.rotate.x>-0.50) {
+        this.rotate.x -= 0.01;
       }
-      else if(keyCode === DOWN_ARROW && this.rot.x<0.50) {
-        this.rot.x += 0.01;
+      else if(keyCode === DOWN_ARROW && this.rotate.x<0.50) {
+        this.rotate.x += 0.01;
       }
-      else if(keyCode === LEFT_ARROW && this.rot.z<0.50) {
-        this.rot.z += 0.01;
+      else if(keyCode === LEFT_ARROW && this.rotate.z<0.50) {
+        this.rotate.z += 0.01;
       }
-      else if(keyCode === RIGHT_ARROW && this.rot.z>-0.50) {
-        this.rot.z -= 0.01;
+      else if(keyCode === RIGHT_ARROW && this.rotate.z>-0.50) {
+        this.rotate.z -= 0.01;
       }
     }
   }
 
+  //displays the base
   displayBox() {
     push();
-    translate(this.pos.x, this.pos.y, this.pos.z);
+    translate(this.position.x, this.position.y, this.position.z);
     translate(0, -this.h/2, 0);
-    rotateX(this.rot.x);
-    rotateZ(this.rot.z);
+    rotateX(this.rotate.x);
+    rotateZ(this.rotate.z);
     box(this.w, this.h, this.d);
     pop();
   }
@@ -186,54 +197,64 @@ class Base {
 //creates ball and applys physics
 class Ball {
   constructor(x, y, z, r) {
-    this.pos = createVector(x, y, z);
-    this.vel = createVector(0, 0, 0);
-    this.acc = createVector();
-    this.rad = r;
+    this.position = createVector(x, y, z);
+    this.velocity = createVector(0, 0, 0);
+    this.acceleration = createVector();
+    this.radius = r;
     this.mass = 1;
   }
+
+  //rolling the ball
   rollOn(area) {
-    let force = createVector(-area.rot.z, 0, area.rot.x);
+    let force = createVector(-area.rotate.z, 0, area.rotate.x);
     force.mult(0.2);
     this.applyForce(force);
   }
+
+  //gravity
   fallFrom(area) {
     if (
-      this.pos.x < -area.w / 2 ||
-      this.pos.x > area.w / 2 ||
-      this.pos.z < -area.d / 2 ||
-      this.pos.z > area.d / 2
+      this.position.x < -area.w / 2 ||
+      this.position.x > area.w / 2 ||
+      this.position.z < -area.d / 2 ||
+      this.position.z > area.d / 2
     ) {
       let gravity = createVector(0, -1, 0);
       this.applyForce(gravity);
     }
   }
+
+  //move the ball
   updatePosition() {
-    this.vel.add(this.acc);
-    this.pos.add(this.vel);
-    this.acc.mult(0);
+    this.velocity.add(this.acceleration);
+    this.position.add(this.velocity);
+    this.acceleration.mult(0);
   }
+
+  //mass and acceleration
   applyForce(f) {
     if (this.mass <= 0) {
       console.log("Wrong mass!");
       return;
     }
     let force = p5.Vector.div(f, this.mass);
-    this.acc.add(force);
+    this.acceleration.add(force);
   }
+
+  //changes the balls velocity
   adjustVelocity(amount) {
-    this.vel.mult(1 + amount);
+    this.velocity.mult(1 + amount);
   }
+
+  //displays the ball properly
   displayOn(area) {
     push();
-    translate(area.pos.x, area.pos.y, area.pos.z);
-    rotateX(area.rot.x);
-    rotateZ(area.rot.z);
-    
-    translate(0, this.rad, 0);
-    translate(this.pos.x, this.pos.y, this.pos.z);
-    sphere(this.rad, 12, 12);
-    
+    translate(area.position.x, area.position.y, area.position.z);
+    rotateX(area.rotate.x);
+    rotateZ(area.rotate.z);
+    translate(0, this.radius, 0);
+    translate(this.position.x, this.position.y, this.position.z);
+    sphere(this.radius, 12, 12);
     pop();
   }
 }
