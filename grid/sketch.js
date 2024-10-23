@@ -113,7 +113,7 @@ function displayGrid() {
   for (let y = 0; y < GRID_SIZE; y++) {
     for (let x = 0; x < GRID_SIZE; x++) {
       if (grid[y][x] === 1) {
-        fill("red");
+        fill("black");
       }
 
       else if (grid[y][x] === 0) {
