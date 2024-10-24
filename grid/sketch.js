@@ -117,7 +117,7 @@ function displayGrid() {
       }
 
       else if (grid[y][x] === 0) {
-        fill("blue");
+        fill("silver");
       }
 
       square(x*cellSize, y*cellSize, cellSize);
