@@ -9,9 +9,16 @@
 
 let grid;
 
-const GRID_SIZE = 10;
+const GRID_SIZE = 40;
 let cellSize;
-let shouldToggleNeighbours = true;
+let shouldToggleNeighbours = false;
+let autoPlayIsOn = false;
+let renderOnFrameMultiple = 5;
+let goober;
+
+function preload() {
+  goober = loadJSON("gosper.json");
+}
 
 function setup() {
   if (windowWidth < windowHeight) {
@@ -26,6 +33,9 @@ function setup() {
 
 function draw() {
   background(220);
+  if (autoPlayIsOn && frameCount % renderOnFrameMultiple === 0) {
+    grid = updateGrid();
+  }
   displayGrid();
 }
 
@@ -77,6 +87,62 @@ function keyPressed() {
   if (key === "n") {
     shouldToggleNeighbours = !shouldToggleNeighbours;
   }
+  if (key === " ") {
+    grid = updateGrid();
+  }
+  if (key === "a") {
+    autoPlayIsOn = !autoPlayIsOn;
+  }
+  if (key === "g") {
+    grid = goober;
+  }
+}
+
+function updateGrid() {
+  //make a new array to hold the next turn
+  let nextTurn = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
+
+  //look at every cell
+  for (let y = 0; y<GRID_SIZE; y++) {
+    for (let x = 0; x<GRID_SIZE; x++) {
+      //count the neighbours
+      let neighbours = 0;
+
+      for(let i = -1; i<=1; i++) {
+        for (let j = -1;j<=1;j++) {
+          //dont make stupid
+          if (y+i>=0 && y+i<GRID_SIZE && x+j>=0 && x+j < GRID_SIZE) {
+            neighbours += grid[y+i][x+j];
+          }
+        }
+      }
+
+      //dont count self
+      neighbours -= grid[y][x];
+
+      //apply the rules of the game
+      if (grid[y][x] === 0) {
+        //currently dead
+        if (neighbours === 3) {
+          nextTurn[y][x] = 1;
+        }
+        else {
+          nextTurn[y][x] = 0;
+        }
+      }
+
+      if (grid[y][x] === 1) {
+        if (neighbours === 2 || neighbours === 3) {
+          nextTurn[y][x] = 1;
+        }
+        else {
+          nextTurn[y][x] = 0;
+        }
+      }
+
+    }
+  }
+  return nextTurn;
 }
   
 
