@@ -15,6 +15,7 @@ let shouldToggleNeighbours = false;
 let autoPlayIsOn = false;
 let renderOnFrameMultiple = 5;
 let goober;
+let boxCount = 0;
 
 function preload() {
   goober = loadJSON("gosper.json");
@@ -22,10 +23,10 @@ function preload() {
 
 function setup() {
   if (windowWidth < windowHeight) {
-    createCanvas(windowWidth, windowWidth);
+    createCanvas(windowWidth, windowWidth, WEBGL);
   }
   else {
-    createCanvas(windowHeight, windowHeight);
+    createCanvas(windowHeight, windowHeight, WEBGL);
   }
   cellSize = height/GRID_SIZE;
   grid = generateRandGrid(GRID_SIZE, GRID_SIZE);
@@ -36,23 +37,29 @@ function draw() {
   if (autoPlayIsOn && frameCount % renderOnFrameMultiple === 0) {
     grid = updateGrid();
   }
+  createCam();
   displayGrid();
 }
 
-function mousePressed() {
-  let x = Math.floor(mouseX/cellSize);
-  let y = Math.floor(mouseY/cellSize);
-
-  toggleCell(x, y);
-
-  if (shouldToggleNeighbours === true) {
-    toggleCell(x + 1, y);
-    toggleCell(x - 1, y);
-    toggleCell(x, y + 1);
-    toggleCell(x, y - 1);
-
-  }
+function createCam() {
+  cam = createCamera();
+  cam.setPosition(width/2, height/2, 2000);
 }
+
+// function mousePressed() {
+//   let x = Math.floor(mouseX/cellSize);
+//   let y = Math.floor(mouseY/cellSize);
+
+//   toggleCell(x, y);
+
+//   if (shouldToggleNeighbours === true) {
+//     toggleCell(x + 1, y);
+//     toggleCell(x - 1, y);
+//     toggleCell(x, y + 1);
+//     toggleCell(x, y - 1);
+
+//   }
+// }
 
 function toggleCell(x, y) {
   //bs check
@@ -69,10 +76,10 @@ function toggleCell(x, y) {
 
 function windowResized() {
   if (windowWidth < windowHeight) {
-    createCanvas(windowWidth, windowWidth);
+    createCanvas(windowWidth, windowWidth, WEBGL);
   }
   else {
-    resizeCanvas(windowHeight, windowHeight);
+    resizeCanvas(windowHeight, windowHeight, WEBGL);
   }
   cellSize = height/GRID_SIZE;
 }
@@ -177,6 +184,7 @@ function generateEmptyGrid(cols, rows) {
 
 function displayGrid() {
   for (let y = 0; y < GRID_SIZE; y++) {
+    boxCount = 0;
     for (let x = 0; x < GRID_SIZE; x++) {
       if (grid[y][x] === 1) {
         fill("black");
@@ -186,8 +194,15 @@ function displayGrid() {
         fill("silver");
       }
 
-      square(x*cellSize, y*cellSize, cellSize);
-      
+      box(cellSize);
+      if (boxCount === GRID_SIZE-1) {
+        translate(-(cellSize*GRID_SIZE) + cellSize, cellSize, 0)
+      }
+      else {
+        translate(cellSize, 0, 0)
+      }
+
+      boxCount++;
     }
   }
 }
