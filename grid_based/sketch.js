@@ -26,7 +26,7 @@ function setup() {
 
 function draw() {
   background(220);
-  createCam();
+  orbitControl();
   displayGrid();
 }
 
@@ -93,11 +93,11 @@ function generateRandGrid(cols, rows) {
     for (let x = 0; x<cols; x++) {
       //choose either 0 or 1 each 50% chance
       if (random(100) < 50) {
-        newGrid[y].push(1);
+        newGrid[y][x] = 1;
       }
 
       else {
-        newGrid[y].push(0);
+        newGrid[y][x] = 0;
       }
     }
   }
@@ -116,6 +116,9 @@ function generateEmptyGrid(cols, rows) {
 }
 
 function displayGrid() {
+
+  translate(-cellSize*GRID_SIZE/2 + cellSize/2, 
+    -cellSize*GRID_SIZE/2 + cellSize/2);
   for (let y = 0; y < GRID_SIZE; y++) {
     boxCount = 0;
     for (let x = 0; x < GRID_SIZE; x++) {

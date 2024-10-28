@@ -5,10 +5,10 @@
 // Extra for Experts:
 // - used 3d arrays
 
-const GRID_SIZE = 21; 
-let boxSize = 10; 
+const GRID_SIZE = 20; 
+let boxSize = 20; 
 let grid = [];
-let colorShade = 0; 
+let changeDelay = 10; 
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
@@ -22,21 +22,19 @@ function draw() {
   fillGrid();
 }
 
+function keyPressed() {
+  if (key === "r") {
+    createGrid();
+  }
+}
+
 function createGrid() {
   for (let i=0; i<GRID_SIZE; i++) {
     grid[i] = [];
     for (let j=0; j<GRID_SIZE; j++) {
       grid[i][j] = [];
-      for (let k=0; k<GRID_SIZE; k++) {
-        
-        let middle = GRID_SIZE/2;
-        let margin = 1;
-        let min = middle - margin;
-        let max = middle + margin; 
-        
-        if (i >= min && i <= max &&
-           j >= min && j <= max &&
-           k >= min && k <= max) {
+      for (let k=0; k<GRID_SIZE; k++) {        
+        if (random(100) < 50) {
           grid[i][j][k] = 1;
         } else {
           grid[i][j][k] = 0;
@@ -55,26 +53,24 @@ function fillGrid() {
     for (let j=0; j<GRID_SIZE; j++) {
       for (let k=0; k<GRID_SIZE; k++) {
         if (grid[i][j][k] == 1) {
-          fill(colorShade, 255, 255);
-        } else {
           fill("black");
+          stroke("blue");
+        } else {
+          noFill();
+          stroke("black"); 
         }
         
         push();
         translate(i*boxSize, j*boxSize, k*boxSize);
-        box(boxSize);
+        box(boxSize - boxSize/4);
         pop();
       }
     }
   }
   
   //changes the grid if a key is pressed
-  if (keyIsPressed) {
+  if (frameCount % changeDelay === 0) {
     update();
-    if (colorShade > 255) {
-      colorShade = 0;
-    }
-    colorShade += 5;
   }
 }
 
@@ -89,21 +85,20 @@ function update() {
       for (let k=0; k<GRID_SIZE; k++) {
    
         let n = neighboringStates(grid, i, j, k);
-        let a = 1;
-        let b = 10;
-        let c = 1;
-        let d = 10;
 
-        if (grid[i][j][k] == 1) {
-          if (n >= a && n <= b) {
+        if (grid[i][j][k] === 1) {
+          if (n === 2 || n === 3) {
             nextGen[i][j][k] = 1;
-          } else {
+          } 
+          else {
             nextGen[i][j][k] = 0;
           }
-        } else {
-          if (n >= c && n <= d) {
+        } 
+        else if (grid[i][j][k] === 0) {
+          if (n === 3) {
             nextGen[i][j][k] = 1;
-          } else {
+          } 
+          else {
             nextGen[i][j][k] = 0;
           }
 
@@ -119,13 +114,18 @@ function update() {
 //finds and adds together the neighbouring boxes
 function neighboringStates(grid, x, y, z) {
   let sum = 0;
-  for (let i=-1; i<2; i++) {
-    for (let j=-1; j<2; j++) {
-      for (let k=-1; k<2; k++) {
-        let xIndex = (x + i + GRID_SIZE) % GRID_SIZE;
-        let yIndex = (y + j + GRID_SIZE) % GRID_SIZE;
-        let zIndex = (z + k + GRID_SIZE) % GRID_SIZE;
-        sum += grid[xIndex][yIndex][zIndex];
+  for (let i=-1; i<1; i++) {
+    for (let j=-1; j<1; j++) {
+      for (let k=-1; k<1; k++) {
+        if (y+i>=0 && y+i<GRID_SIZE && x+j>=0 && x+j < GRID_SIZE && z+k>=0 && z+k < GRID_SIZE) {
+          try {
+            sum += grid[x+i][y+j][z+k];
+          }
+          catch {
+            sum = sum;
+          }
+          
+        }
       }
     }
   }
