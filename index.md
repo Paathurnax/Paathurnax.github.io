@@ -11,6 +11,7 @@
 - [Bubble Object](bubble)
 - [Sound Effects](sound)
 - [Grid Demo](grid)
+- [Rectangle Grid](rect_grid)
 
 ## Projects
 - [Interactive Scene](interactive_scene)

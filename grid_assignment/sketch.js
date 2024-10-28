@@ -5,14 +5,14 @@
 // Extra for Experts:
 // - used 3d arrays
 
-const GRID_SIZE = 20; 
+const GRID_SIZE = 10; 
 let boxSize = 20; 
 let grid = [];
+let grid2 = [];
 let changeDelay = 10; 
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-  colorMode(HSB, 255);
   createGrid();
 }
 
@@ -36,7 +36,8 @@ function createGrid() {
       for (let k=0; k<GRID_SIZE; k++) {        
         if (random(100) < 50) {
           grid[i][j][k] = 1;
-        } else {
+        } 
+        else {
           grid[i][j][k] = 0;
         }
       }
@@ -46,16 +47,17 @@ function createGrid() {
 
 function fillGrid() {
   translate(-boxSize*GRID_SIZE/2 + boxSize/2, 
-            -boxSize*GRID_SIZE/2 + boxSize/2, 
-           -boxSize*GRID_SIZE/2 + boxSize/2);
+    -boxSize*GRID_SIZE/2 + boxSize/2, 
+    -boxSize*GRID_SIZE/2 + boxSize/2);
   
   for (let i=0; i<GRID_SIZE; i++) {
     for (let j=0; j<GRID_SIZE; j++) {
       for (let k=0; k<GRID_SIZE; k++) {
-        if (grid[i][j][k] == 1) {
+        if (grid[i][j][k] === 1) {
           fill("black");
           stroke("blue");
-        } else {
+        } 
+        else {
           noFill();
           stroke("black"); 
         }
@@ -84,10 +86,10 @@ function update() {
       nextGen[i][j] = [];
       for (let k=0; k<GRID_SIZE; k++) {
    
-        let n = neighboringStates(grid, i, j, k);
+        let neighbours = neighboringStates(grid, i, j, k);
 
         if (grid[i][j][k] === 1) {
-          if (n === 2 || n === 3) {
+          if (neighbours === 2 || neighbours === 3) {
             nextGen[i][j][k] = 1;
           } 
           else {
@@ -95,7 +97,7 @@ function update() {
           }
         } 
         else if (grid[i][j][k] === 0) {
-          if (n === 3) {
+          if (neighbours === 3) {
             nextGen[i][j][k] = 1;
           } 
           else {
@@ -132,4 +134,111 @@ function neighboringStates(grid, x, y, z) {
   sum -= grid[x][y][z];
   return sum;
   
+}
+
+function create2dGrid() {
+  let new2dGrid = [];
+  for (let x = 0; x < GRID_SIZE; x++) {
+    new2dGrid.push([]);
+    for (let y = 0; y < GRID_SIZE; y++) {
+      if (random(100) > 50) {
+        new2dGrid[x][y] = 1;
+      }
+      else {
+        new2dGrid[x][y] = 0;
+      }
+    }
+  }
+  return new2dGrid;
+}
+
+function display2dGrid() {
+  for (let x = 0; x < GRID_SIZE; x++) {
+    for (let y = 0; y < GRID_SIZE; y++) {
+      if (grid2[x][y] === 1) {
+        fill("black");
+      }
+      else {
+        fill("white");
+      }
+
+      square(x*boxSize, y*boxSize, boxSize);
+    }
+  }
+}
+
+function neighbourCount() {
+  let nextTurn = [];
+
+  //look at every cell
+  for (let x = 0; x<GRID_SIZE; x++) {
+    for (let y = 0; x<GRID_SIZE; y++) {
+      //count the neighbours
+      let neighbours = 0;
+
+      for(let i = -1; i<=1; i++) {
+        for (let j = -1;j<=1;j++) {
+          //dont make stupid
+          if (y+i>=0 && y+i<GRID_SIZE && x+j>=0 && x+j < GRID_SIZE) {
+            neighbours += grid[x+i][y+j];
+          }
+        }
+      }
+
+      //dont count self
+      neighbours -= grid[x][y];
+
+      //apply the rules of the game
+      if (grid[x][y] === 0) {
+        //currently dead
+        if (neighbours === 3) {
+          nextTurn[x][y] = 1;
+        }
+        else {
+          nextTurn[x][y] = 0;
+        }
+      }
+
+      if (grid[x][y] === 1) {
+        if (neighbours === 2 || neighbours === 3) {
+          nextTurn[x][y] = 1;
+        }
+        else {
+          nextTurn[x][y] = 0;
+        }
+      }
+
+    }
+  }
+  return nextTurn;
+}
+  
+
+function generateRandGrid(cols, rows) {
+  let newGrid = [];
+  for (let y = 0; y<rows; y++) {
+    newGrid.push([]);
+    for (let x = 0; x<cols; x++) {
+      //choose either 0 or 1 each 50% chance
+      if (random(100) < 50) {
+        newGrid[y].push(1);
+      }
+
+      else {
+        newGrid[y].push(0);
+      }
+    }
+  }
+  return newGrid;
+}
+
+function generateEmptyGrid(cols, rows) {
+  let newGrid = [];
+  for (let y = 0; y<cols; y++) {
+    newGrid.push([]);
+    for (let x = 0; x<rows; x++) {
+      newGrid[y].push(0);
+    }
+  }
+  return newGrid;
 }

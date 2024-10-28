@@ -196,10 +196,10 @@ function displayGrid() {
 
       box(cellSize);
       if (boxCount === GRID_SIZE-1) {
-        translate(-(cellSize*GRID_SIZE) + cellSize, cellSize, 0)
+        translate(-(cellSize*GRID_SIZE) + cellSize, cellSize, 0);
       }
       else {
-        translate(cellSize, 0, 0)
+        translate(cellSize, 0, 0);
       }
 
       boxCount++;
