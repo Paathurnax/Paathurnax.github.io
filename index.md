@@ -12,6 +12,7 @@
 - [Sound Effects](sound)
 - [Grid Demo](grid)
 - [Rectangle Grid](rect_grid)
+- [character in grid](char_grid)
 
 ## Projects
 - [Interactive Scene](interactive_scene)

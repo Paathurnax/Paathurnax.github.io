@@ -6,13 +6,15 @@
 // - used 3d arrays
 
 const GRID_SIZE = 10; 
-let boxSize = 20; 
+let boxSize = 20;
+let squareSize; 
 let grid = [];
 let grid2 = [];
 let changeDelay = 10; 
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
+  squareSize = height/GRID_SIZE;
   createGrid();
 }
 
@@ -119,14 +121,8 @@ function neighboringStates(grid, x, y, z) {
   for (let i=-1; i<1; i++) {
     for (let j=-1; j<1; j++) {
       for (let k=-1; k<1; k++) {
-        if (y+i>=0 && y+i<GRID_SIZE && x+j>=0 && x+j < GRID_SIZE && z+k>=0 && z+k < GRID_SIZE) {
-          try {
-            sum += grid[x+i][y+j][z+k];
-          }
-          catch {
-            sum = sum;
-          }
-          
+        if (x+i >= 0 && x+i < GRID_SIZE && y+j >= 0 && y+j < GRID_SIZE && z+k >= 0 && z+k < GRID_SIZE) {
+          sum += grid[x+i][y+j][z+k];         
         }
       }
     }
@@ -155,38 +151,25 @@ function create2dGrid() {
 function display2dGrid() {
   for (let x = 0; x < GRID_SIZE; x++) {
     for (let y = 0; y < GRID_SIZE; y++) {
-      if (grid2[x][y] === 1) {
+      if (grid[x][y] === 1) {
         fill("black");
       }
       else {
         fill("white");
       }
 
-      square(x*boxSize, y*boxSize, boxSize);
+      square(x*squareSize, y*squareSize, squareSize);
     }
   }
 }
 
-function neighbourCount() {
+function nextTurn() {
   let nextTurn = [];
 
   //look at every cell
   for (let x = 0; x<GRID_SIZE; x++) {
     for (let y = 0; x<GRID_SIZE; y++) {
-      //count the neighbours
-      let neighbours = 0;
-
-      for(let i = -1; i<=1; i++) {
-        for (let j = -1;j<=1;j++) {
-          //dont make stupid
-          if (y+i>=0 && y+i<GRID_SIZE && x+j>=0 && x+j < GRID_SIZE) {
-            neighbours += grid[x+i][y+j];
-          }
-        }
-      }
-
-      //dont count self
-      neighbours -= grid[x][y];
+      let neighbours = neighbourCount(grid, x, y);
 
       //apply the rules of the game
       if (grid[x][y] === 0) {
@@ -214,31 +197,49 @@ function neighbourCount() {
 }
   
 
-function generateRandGrid(cols, rows) {
+function generateRand2dGrid(cols, rows) {
   let newGrid = [];
-  for (let y = 0; y<rows; y++) {
+  for (let x = 0; x<cols; x++) {
     newGrid.push([]);
-    for (let x = 0; x<cols; x++) {
+    for (let y = 0; y<rows; y++) {
       //choose either 0 or 1 each 50% chance
       if (random(100) < 50) {
-        newGrid[y].push(1);
+        newGrid[x][y] = 1;
       }
 
       else {
-        newGrid[y].push(0);
+        newGrid[x][y] = 0;
       }
     }
   }
   return newGrid;
 }
 
-function generateEmptyGrid(cols, rows) {
+function generateEmpty2dGrid(cols, rows) {
   let newGrid = [];
-  for (let y = 0; y<cols; y++) {
+  for (let x = 0; x<rows; x++) {
     newGrid.push([]);
-    for (let x = 0; x<rows; x++) {
-      newGrid[y].push(0);
+    for (let y = 0; y<cols; y++) {
+      newGrid[x][y] = 0;
     }
   }
   return newGrid;
+}
+
+function neighbourCount(grid, x, y) {
+  //count the neighbours
+  let neighbours = 0;
+
+  for(let i = -1; i<=1; i++) {
+    for (let j = -1;j<=1;j++) {
+      //dont make stupid
+      if (x+i>=0 && x+i<GRID_SIZE && y+j>=0 && y+j < GRID_SIZE) {
+        neighbours += grid[x+i][y+j];
+      }
+    }
+  }
+
+  //dont count self
+  neighbours -= grid[x][y];
+  return neighbours;
 }
