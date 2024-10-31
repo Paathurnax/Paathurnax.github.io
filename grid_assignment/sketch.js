@@ -7,131 +7,130 @@
 
 const GRID_SIZE = 10; 
 let boxSize = 20;
-let squareSize; 
-let grid = [];
-let grid2 = [];
+let squareSize = 20; 
+let grid;
+let grid2;
+let state;
 let changeDelay = 10; 
-let state = "start";
 let grid2dButton;
 let grid3dButton;
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-  squareSize = height/GRID_SIZE;
-  grid = createGrid();
-  // grid2 = create2dGrid();
-  // gridSwitch2d();
-  // gridSwitch3d();
+  gridSwitch2d();
+  gridSwitch3d();
+  state = "start";
 }
 
 function draw() {
   background(255);
-  orbitControl();
-  fillGrid();
+  stateStuff();
 }
 
 function stateStuff() {
-  // if (state === "start") {
-  //   // grid2dButton.show();
-  //   // grid3dButton.show();
-  // }
-  // else if (state === "third dimension") {
-  // orbitControl();
-  // fillGrid();
-  //   // grid2dButton.hide();
-  //   // grid3dButton.hide();
-  // }
-  // else if (state === "second dimension") {
-  //   display2dGrid();
-  //   // grid2dButton.hide();
-  //   // grid3dButton.hide();
-  // }
+  if (state === "start") {
+    grid2dButton.show();
+    grid3dButton.show();
+  }
+  else if (state === "third dimension") {
+    orbitControl();
+    fillGrid();
+    grid2dButton.hide();
+    grid3dButton.hide();
+  }
+  else if (state === "second dimension") {
+    display2dGrid();
+    grid2dButton.hide();
+    grid3dButton.hide();
+  }
 }
 
-// function gridSwitch2d() {
-//   grid2dButton = createButton("click to start with a 2d grid");
-//   grid2dButton.mousePressed(changeState());
-//   grid2dButton.position(width/4, height/2);
-// }
+function gridSwitch2d() {
+  grid2dButton = createButton("click to start with a 2d grid");
+  grid2dButton.mousePressed(changeState);
+  grid2dButton.position(width/4, height/2);
+}
 
-// function gridSwitch3d() {
-//   grid3dButton = createButton("click to start with a 3d grid");
-//   grid3dButton.mousePressed(changeState2());
-//   grid3dButton.position(width*0.75, height/2);
-// }
+function gridSwitch3d() {
+  grid3dButton = createButton("click to start with a 3d grid");
+  grid3dButton.mousePressed(changeState2);
+  grid3dButton.position(width*0.75, height/2);
+}
 
-// function changeState() {
-//   state = "second dimension";
-// }
+function changeState() {
+  state = "second dimension";
+  grid2 = create2dGrid();
+}
 
-// function changeState2() {
-//   state = "third dimension";
-// }
+function changeState2() {
+  state = "third dimension";
+  grid = createGrid();
+}
 
 function keyPressed() {
   if (key === "r" && state === "third dimension") {
-    createGrid();
+    grid = createGrid();
   }
-//   else if (key === "r" && state === "second dimension") {
-//     create2dGrid();
-//   }
-//   if (key === "e" && state === "second dimension") {
-//     generateEmpty2dGrid();
-//   }
+  else if (key === "r" && state === "second dimension") {
+    grid2 = create2dGrid();
+  }
+  if (key === "e" && state === "second dimension") {
+    grid2 = generateEmpty2dGrid(GRID_SIZE, GRID_SIZE);
+  }
 }
 
 // 3d grid functions
 
 //create the grid
 function createGrid() {
-  for (let i=0; i<GRID_SIZE; i++) {
-    grid[i] = [];
-    for (let j=0; j<GRID_SIZE; j++) {
-      grid[i][j] = [];
-      for (let k=0; k<GRID_SIZE; k++) {        
+  let createdGrid = [];
+  for (let x=0; x<GRID_SIZE; x++) {
+    createdGrid[x] = [];
+    for (let y=0; y<GRID_SIZE; y++) {
+      createdGrid[x][y] = [];
+      for (let z=0; z<GRID_SIZE; z++) {        
         if (random(100) < 50) {
-          grid[i][j][k] = 1;
+          createdGrid[x][y][z] = 1;
         } 
         else {
-          grid[i][j][k] = 0;
+          createdGrid[x][y][z] = 0;
         }
       }
     }
   }
+  return createdGrid;
 }
 
 
 //fill the grid
 function fillGrid() {
-  if (state === "third dimension") {
-    translate(-boxSize*GRID_SIZE/2 + boxSize/2, 
-      -boxSize*GRID_SIZE/2 + boxSize/2, 
-      -boxSize*GRID_SIZE/2 + boxSize/2);
+  translate(-boxSize*GRID_SIZE/2 + boxSize/2, 
+    -boxSize*GRID_SIZE/2 + boxSize/2, 
+    -boxSize*GRID_SIZE/2 + boxSize/2);
     
-    for (let i=0; i<GRID_SIZE; i++) {
-      for (let j=0; j<GRID_SIZE; j++) {
-        for (let k=0; k<GRID_SIZE; k++) {
-          if (grid[i][j][k] === 1) {
-            fill("black");
-            stroke("blue");
-          } 
-          else if (grid[i][j][k] === 0){
-            noFill();
-            stroke("black"); 
-          }
-          
-          push();
-          translate(i*boxSize, j*boxSize, k*boxSize);
-          box(boxSize - boxSize/4);
-          pop();
+  for (let i=0; i<GRID_SIZE; i++) {
+    for (let j=0; j<GRID_SIZE; j++) {
+      for (let k=0; k<GRID_SIZE; k++) {
+        if (grid[i][j][k] === 1) {
+          fill("black");
+          stroke("blue");
+        } 
+        else {
+          noFill();
+          stroke("black"); 
         }
+          
+        push();
+        translate(i*boxSize, j*boxSize, k*boxSize);
+        box(boxSize - boxSize/4);
+        pop();
       }
     }
+  }
     
-    //changes the grid after a certain number of frames has passed
-    if (frameCount % changeDelay === 0) {
-      update();
-    }
+  //changes the grid after a certain number of frames has passed
+  if (frameCount % changeDelay === 0) {
+    update();
   }
 }
 
@@ -189,111 +188,110 @@ function neighboringStates(grid, x, y, z) {
   
 }
 
-// //2d grid functions
+//2d grid functions
 
-// //create the grid
-// function create2dGrid() {
-//   state = "second dimension";
-//   let new2dGrid = [];
-//   for (let x = 0; x < GRID_SIZE; x++) {
-//     new2dGrid.push([]);
-//     for (let y = 0; y < GRID_SIZE; y++) {
-//       if (random(100) > 50) {
-//         new2dGrid[x][y] = 1;
-//       }
-//       else {
-//         new2dGrid[x][y] = 0;
-//       }
-//     }
-//   }
-//   return new2dGrid;
-// }
-
-
-// //show the grid
-// function display2dGrid() {
-//   for (let x = 0; x < GRID_SIZE; x++) {
-//     for (let y = 0; y < GRID_SIZE; y++) {
-//       if (grid2[x][y] === 1) {
-//         fill("black");
-//       }
-//       else {
-//         fill("white");
-//       }
-
-//       square(x*squareSize, y*squareSize, squareSize);
-//     }
-//   }
-
-//   if (frameCount % changeDelay === 0) {
-//     nextTurn();
-//   }
-// }
+//create the grid
+function create2dGrid() {
+  let newGrid = [];
+  for (let x = 0; x < GRID_SIZE; x++) {
+    newGrid[x] = [];
+    for (let y = 0; y < GRID_SIZE; y++) {
+      if (random(100) > 50) {
+        newGrid[x][y] = 1;
+      }
+      else {
+        newGrid[x][y] = 0;
+      }
+    }
+  }
+  return newGrid;
+}
 
 
-// //update the grid
-// function nextTurn() {
-//   let nextTurn = [];
+//show the grid
+function display2dGrid() {
+  for (let x = 0; x < GRID_SIZE; x++) {
+    for (let y = 0; y < GRID_SIZE; y++) {
+      if (grid2[x][y] === 1) {
+        fill("black");
+      }
+      else {
+        fill("white");
+      }
 
-//   //look at every cell
-//   for (let x = 0; x<GRID_SIZE; x++) {
-//     for (let y = 0; x<GRID_SIZE; y++) {
-//       let neighbours = neighbourCount(grid2, x, y);
+      square(x*squareSize, y*squareSize, squareSize);
+    }
+  }
 
-//       //apply the rules of the game
-//       if (grid2[x][y] === 0) {
-//         //currently dead
-//         if (neighbours === 3) {
-//           nextTurn[x][y] = 1;
-//         }
-//         else {
-//           nextTurn[x][y] = 0;
-//         }
-//       }
-
-//       if (grid2[x][y] === 1) {
-//         if (neighbours === 2 || neighbours === 3) {
-//           nextTurn[x][y] = 1;
-//         }
-//         else {
-//           nextTurn[x][y] = 0;
-//         }
-//       }
-
-//     }
-//   }
-//   grid2 = nextTurn;
-// }
+  if (frameCount % changeDelay === 0) {
+    grid2 = nextTurn();
+  }
+}
 
 
-// //create empty grid
-// function generateEmpty2dGrid(cols, rows) {
-//   let newGrid = [];
-//   for (let x = 0; x<rows; x++) {
-//     newGrid.push([]);
-//     for (let y = 0; y<cols; y++) {
-//       newGrid[x][y] = 0;
-//     }
-//   }
-//   return newGrid;
-// }
+//update the grid
+function nextTurn() {
+  let nextTurn = [];
+
+  //look at every cell
+  for (let x = 0; x<GRID_SIZE; x++) {
+    for (let y = 0; x<GRID_SIZE; y++) {
+      let neighbours = neighbourCount(grid2, x, y);
+
+      //apply the rules of the game
+      if (grid2[x][y] === 0) {
+        //currently dead
+        if (neighbours === 3) {
+          nextTurn[x][y] = 1;
+        }
+        else {
+          nextTurn[x][y] = 0;
+        }
+      }
+
+      if (grid2[x][y] === 1) {
+        if (neighbours === 2 || neighbours === 3) {
+          nextTurn[x][y] = 1;
+        }
+        else {
+          nextTurn[x][y] = 0;
+        }
+      }
+
+    }
+  }
+  return nextTurn;
+}
 
 
-// //count and return the neighbours
-// function neighbourCount(grid2, x, y) {
-//   //count the neighbours
-//   let neighbours = 0;
+//create empty grid
+function generateEmpty2dGrid(cols, rows) {
+  let newGrid = [];
+  for (let x = 0; x<rows; x++) {
+    newGrid.push([]);
+    for (let y = 0; y<cols; y++) {
+      newGrid[x][y] = 0;
+    }
+  }
+  return newGrid;
+}
 
-//   for(let i = -1; i<=1; i++) {
-//     for (let j = -1;j<=1;j++) {
-//       //dont make stupid
-//       if (x+i>=0 && x+i<GRID_SIZE && y+j>=0 && y+j < GRID_SIZE) {
-//         neighbours += grid2[x+i][y+j];
-//       }
-//     }
-//   }
 
-//   //dont count self
-//   neighbours -= grid2[x][y];
-//   return neighbours;
+//count and return the neighbours
+function neighbourCount(grid2, x, y) {
+  //count the neighbours
+  let neighbours = 0;
 
+  for(let i = -1; i<=1; i++) {
+    for (let j = -1;j<=1;j++) {
+      //dont make stupid
+      if (x+i>=0 && x+i<GRID_SIZE && y+j>=0 && y+j < GRID_SIZE) {
+        neighbours += grid2[x+i][y+j];
+      }
+    }
+  }
+
+  //dont count self
+  neighbours -= grid2[x][y];
+  return neighbours;
+}
