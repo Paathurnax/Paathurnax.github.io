@@ -104,6 +104,7 @@ function createGrid() {
 
 //fill the grid
 function fillGrid() {
+  push();
   translate(-boxSize*GRID_SIZE/2 + boxSize/2, 
     -boxSize*GRID_SIZE/2 + boxSize/2, 
     -boxSize*GRID_SIZE/2 + boxSize/2);
@@ -112,17 +113,20 @@ function fillGrid() {
     for (let j=0; j<GRID_SIZE; j++) {
       for (let k=0; k<GRID_SIZE; k++) {
         if (grid[i][j][k] === 1) {
-          fill("black");
-          stroke("blue");
+          fill("lightblue");
+          strokeWeight(0.5);
+          // stroke("blue");
+          noStroke();
         } 
         else {
           noFill();
-          stroke("black"); 
+          strokeWeight(0.5);
+          stroke("gray"); 
         }
           
         push();
         translate(i*boxSize, j*boxSize, k*boxSize);
-        box(boxSize - boxSize/4);
+        box(boxSize);
         pop();
       }
     }
@@ -132,6 +136,7 @@ function fillGrid() {
   if (frameCount % changeDelay === 0) {
     update();
   }
+  pop();
 }
 
 
@@ -147,7 +152,7 @@ function update() {
         let neighbours = neighboringStates(grid, i, j, k);
 
         if (grid[i][j][k] === 1) {
-          if (neighbours === 2 || neighbours === 3) {
+          if (neighbours === 4 || neighbours === 5) {
             nextGen[i][j][k] = 1;
           } 
           else {
@@ -155,7 +160,7 @@ function update() {
           }
         } 
         else if (grid[i][j][k] === 0) {
-          if (neighbours === 3) {
+          if (neighbours === 1) {
             nextGen[i][j][k] = 1;
           } 
           else {
@@ -197,10 +202,10 @@ function create2dGrid() {
     newGrid[x] = [];
     for (let y = 0; y < GRID_SIZE; y++) {
       if (random(100) > 50) {
-        newGrid[x][y] = 1;
+        newGrid[x].push(1);
       }
       else {
-        newGrid[x][y] = 0;
+        newGrid[x].push(0);
       }
     }
   }
@@ -224,19 +229,32 @@ function display2dGrid() {
   }
 
   if (frameCount % changeDelay === 0) {
-    grid2 = nextTurn();
+    grid2 = updateGrid();
   }
 }
 
-
-//update the grid
-function nextTurn() {
-  let nextTurn = [];
+//update the grid for the next turn
+function updateGrid() {
+  //make a new array to hold the next turn
+  let nextTurn = generateEmpty2dGrid(GRID_SIZE, GRID_SIZE);
 
   //look at every cell
   for (let x = 0; x<GRID_SIZE; x++) {
-    for (let y = 0; x<GRID_SIZE; y++) {
-      let neighbours = neighbourCount(grid2, x, y);
+    for (let y = 0; y<GRID_SIZE; y++) {
+      //count the neighbours
+      let neighbours = 0;
+
+      for(let i = -1; i<=1; i++) {
+        for (let j = -1;j<=1;j++) {
+          //dont make stupid
+          if (x+i>=0 && x+i<GRID_SIZE && y+j>=0 && y+j < GRID_SIZE) {
+            neighbours += grid2[x+i][y+j];
+          }
+        }
+      }
+
+      //dont count self
+      neighbours -= grid2[x][y];
 
       //apply the rules of the game
       if (grid2[x][y] === 0) {
@@ -244,9 +262,9 @@ function nextTurn() {
         if (neighbours === 3) {
           nextTurn[x][y] = 1;
         }
-        // else {
-        //   nextTurn[x][y] = 0;
-        // }
+        else {
+          nextTurn[x][y] = 0;
+        }
       }
 
       if (grid2[x][y] === 1) {
@@ -270,7 +288,7 @@ function generateEmpty2dGrid(cols, rows) {
   for (let x = 0; x<rows; x++) {
     newGrid.push([]);
     for (let y = 0; y<cols; y++) {
-      newGrid[x][y] = 0;
+      newGrid[x].push(0);
     }
   }
   return newGrid;
@@ -278,7 +296,7 @@ function generateEmpty2dGrid(cols, rows) {
 
 
 //count and return the neighbours
-function neighbourCount(grid2, x, y) {
+function neighbourCount(grid, x, y) {
   //count the neighbours
   let neighbours = 0;
 
@@ -286,12 +304,12 @@ function neighbourCount(grid2, x, y) {
     for (let j = -1;j<=1;j++) {
       //dont make stupid
       if (x+i>=0 && x+i<GRID_SIZE && y+j>=0 && y+j < GRID_SIZE) {
-        neighbours += grid2[x+i][y+j];
+        neighbours += grid[x+i][y+j];
       }
     }
   }
 
   //dont count self
-  neighbours -= grid2[x][y];
+  neighbours -= grid[x][y];
   return neighbours;
 }
