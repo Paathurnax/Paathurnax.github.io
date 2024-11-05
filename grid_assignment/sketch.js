@@ -215,7 +215,7 @@ function display2dGrid() {
       if (grid2[x][y] === 1) {
         fill("black");
       }
-      else {
+      else if(grid2[x][y] === 0) {
         fill("white");
       }
 
@@ -244,9 +244,9 @@ function nextTurn() {
         if (neighbours === 3) {
           nextTurn[x][y] = 1;
         }
-        else {
-          nextTurn[x][y] = 0;
-        }
+        // else {
+        //   nextTurn[x][y] = 0;
+        // }
       }
 
       if (grid2[x][y] === 1) {
