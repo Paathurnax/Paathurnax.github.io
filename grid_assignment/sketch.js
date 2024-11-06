@@ -6,14 +6,19 @@
 // - used 3d arrays
 
 const GRID_SIZE = 10; 
+const DEAD = 0;
+const ALIVE = 1;
 let boxSize = 20;
-let squareSize = 20; 
+let squareSize = 25; 
 let grid;
 let grid2;
 let state;
 let changeDelay = 10; 
 let grid2dButton;
 let grid3dButton;
+let maxNeighbour = 3;
+let minNeighbour = 2;
+
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
@@ -75,7 +80,10 @@ function keyPressed() {
     grid2 = create2dGrid();
   }
   if (key === "e" && state === "second dimension") {
-    grid2 = generateEmpty2dGrid(GRID_SIZE, GRID_SIZE);
+    grid2 = generateEmpty2dGrid();
+  }
+  else if (key === "e" && state === "third dimension") {
+    grid = createEmptyGrid();
   }
 }
 
@@ -90,10 +98,10 @@ function createGrid() {
       createdGrid[x][y] = [];
       for (let z=0; z<GRID_SIZE; z++) {        
         if (random(100) < 50) {
-          createdGrid[x][y][z] = 1;
+          createdGrid[x][y][z] = ALIVE;
         } 
         else {
-          createdGrid[x][y][z] = 0;
+          createdGrid[x][y][z] = DEAD;
         }
       }
     }
@@ -101,10 +109,23 @@ function createGrid() {
   return createdGrid;
 }
 
+function createEmptyGrid() {
+  let createdGrid = [];
+  for (let x=0; x<GRID_SIZE; x++) {
+    createdGrid[x] = [];
+    for (let y=0; y<GRID_SIZE; y++) {
+      createdGrid[x][y] = [];
+      for (let z=0; z<GRID_SIZE; z++) {        
+        createdGrid[x][y][z] = DEAD;
+      }
+    }
+  }
+  return createdGrid;
+}
 
 //fill the grid
 function fillGrid() {
-  push();
+  //center the cubes
   translate(-boxSize*GRID_SIZE/2 + boxSize/2, 
     -boxSize*GRID_SIZE/2 + boxSize/2, 
     -boxSize*GRID_SIZE/2 + boxSize/2);
@@ -112,13 +133,13 @@ function fillGrid() {
   for (let i=0; i<GRID_SIZE; i++) {
     for (let j=0; j<GRID_SIZE; j++) {
       for (let k=0; k<GRID_SIZE; k++) {
-        if (grid[i][j][k] === 1) {
+        if (grid[i][j][k] === ALIVE) {
           fill("lightblue");
           strokeWeight(0.5);
-          // stroke("blue");
           noStroke();
         } 
-        else {
+        
+        else if (grid[i][j][k] === DEAD) {
           noFill();
           strokeWeight(0.5);
           stroke("gray"); 
@@ -136,7 +157,6 @@ function fillGrid() {
   if (frameCount % changeDelay === 0) {
     update();
   }
-  pop();
 }
 
 
@@ -152,19 +172,19 @@ function update() {
         let neighbours = neighboringStates(grid, i, j, k);
 
         if (grid[i][j][k] === 1) {
-          if (neighbours === 4 || neighbours === 5) {
-            nextGen[i][j][k] = 1;
+          if (neighbours === minNeighbour || neighbours === maxNeighbour) {
+            nextGen[i][j][k] = ALIVE;
           } 
           else {
-            nextGen[i][j][k] = 0;
+            nextGen[i][j][k] = DEAD;
           }
         } 
-        else if (grid[i][j][k] === 0) {
-          if (neighbours === 1) {
-            nextGen[i][j][k] = 1;
+        else if (grid[i][j][k] === DEAD) {
+          if (neighbours === maxNeighbour) {
+            nextGen[i][j][k] = ALIVE;
           } 
           else {
-            nextGen[i][j][k] = 0;
+            nextGen[i][j][k] = DEAD;
           }
 
 
@@ -188,7 +208,7 @@ function neighboringStates(grid, x, y, z) {
       }
     }
   }
-  sum -= grid[x][y][z];
+  // sum -= grid[x][y][z];
   return sum;
   
 }
@@ -201,11 +221,12 @@ function create2dGrid() {
   for (let x = 0; x < GRID_SIZE; x++) {
     newGrid[x] = [];
     for (let y = 0; y < GRID_SIZE; y++) {
+      //determine the color of the box using a random number
       if (random(100) > 50) {
-        newGrid[x].push(1);
+        newGrid[x][y] = ALIVE;
       }
       else {
-        newGrid[x].push(0);
+        newGrid[x][y] = DEAD;
       }
     }
   }
@@ -217,10 +238,10 @@ function create2dGrid() {
 function display2dGrid() {
   for (let x = 0; x < GRID_SIZE; x++) {
     for (let y = 0; y < GRID_SIZE; y++) {
-      if (grid2[x][y] === 1) {
+      if (grid2[x][y] === ALIVE) {
         fill("black");
       }
-      else if(grid2[x][y] === 0) {
+      else if(grid2[x][y] === DEAD) {
         fill("white");
       }
 
@@ -257,22 +278,22 @@ function updateGrid() {
       neighbours -= grid2[x][y];
 
       //apply the rules of the game
-      if (grid2[x][y] === 0) {
+      if (grid2[x][y] === DEAD) {
         //currently dead
-        if (neighbours === 3) {
-          nextTurn[x][y] = 1;
+        if (neighbours === maxNeighbour) {
+          nextTurn[x][y] = ALIVE;
         }
         else {
-          nextTurn[x][y] = 0;
+          nextTurn[x][y] = DEAD;
         }
       }
 
-      if (grid2[x][y] === 1) {
-        if (neighbours === 2 || neighbours === 3) {
-          nextTurn[x][y] = 1;
+      if (grid2[x][y] === ALIVE) {
+        if (neighbours === minNeighbour || neighbours === maxNeighbour) {
+          nextTurn[x][y] = ALIVE;
         }
         else {
-          nextTurn[x][y] = 0;
+          nextTurn[x][y] = DEAD;
         }
       }
 
@@ -283,12 +304,12 @@ function updateGrid() {
 
 
 //create empty grid
-function generateEmpty2dGrid(cols, rows) {
+function generateEmpty2dGrid() {
   let newGrid = [];
-  for (let x = 0; x<rows; x++) {
-    newGrid.push([]);
-    for (let y = 0; y<cols; y++) {
-      newGrid[x].push(0);
+  for (let x = 0; x<GRID_SIZE; x++) {
+    newGrid[x] = [];
+    for (let y = 0; y<GRID_SIZE; y++) {
+      newGrid[x][y] = DEAD;
     }
   }
   return newGrid;
