@@ -52,14 +52,17 @@ function stateStuff() {
 
 function gridSwitch2d() {
   grid2dButton = createButton("click to start with a 2d grid");
+  grid2dButton.mouseOver();
+  // grid2dButton.size(150, 21);
+  // grid2dButton.style("font-size", "10px");
   grid2dButton.mousePressed(changeState);
-  grid2dButton.position(width/4, height/2);
+  grid2dButton.position(width/2 - 100, height/2);
 }
 
 function gridSwitch3d() {
   grid3dButton = createButton("click to start with a 3d grid");
   grid3dButton.mousePressed(changeState2);
-  grid3dButton.position(width*0.75, height/2);
+  grid3dButton.position(width/2 + 100, height/2);
 }
 
 function changeState() {
@@ -208,7 +211,7 @@ function neighboringStates(grid, x, y, z) {
       }
     }
   }
-  // sum -= grid[x][y][z];
+  sum -= grid[x][y][z];
   return sum;
   
 }
@@ -257,7 +260,7 @@ function display2dGrid() {
 //update the grid for the next turn
 function updateGrid() {
   //make a new array to hold the next turn
-  let nextTurn = generateEmpty2dGrid(GRID_SIZE, GRID_SIZE);
+  let nextTurn = generateEmpty2dGrid();
 
   //look at every cell
   for (let x = 0; x<GRID_SIZE; x++) {
