@@ -62,7 +62,7 @@ function stateStuff() {
   if (state === "start") {
     textFont(font);
     fill("blue");
-    text("The Game of Life 2D and 3D", width/2, -150)
+    text("The Game of Life 2D and 3D", width/2, -150);
     grid2dButton.show();
     grid3dButton.show();
   }
@@ -111,10 +111,6 @@ function changeState2() {
   grid = createGrid();
 }
 
-//wip
-function colorChange() {
-  grid2dButton.style("color", "blue");
-}
 
 //creating random or empty grids depending on the key pressed and the current state
 function keyPressed() {
@@ -256,7 +252,7 @@ function fillGrid() {
   //displaying the 2d grid
   else if (state === "second dimension") {
     //moving the grid to the proper location
-    translate(-squareSize*GRID_SIZE/2, -squareSize*GRID_SIZE/2, 0)
+    translate(-squareSize*GRID_SIZE/2, -squareSize*GRID_SIZE/2, 0);
     for (let x = 0; x < GRID_SIZE; x++) {
       for (let y = 0; y < GRID_SIZE; y++) {
         //filling the grid with the right color
@@ -385,14 +381,14 @@ function neighbourCount(grid, x, y) {
   //count the neighbours
   let neighbours = 0;
 
-    for(let i = -1; i<=1; i++) {
-      for (let j = -1;j<=1;j++) {
-        //checking if the neighbour actually exists
-         if (x+i>=0 && x+i<GRID_SIZE && y+j>=0 && y+j < GRID_SIZE) {
-          neighbours += grid[x+i][y+j];
-        }
+  for(let i = -1; i<=1; i++) {
+    for (let j = -1;j<=1;j++) {
+      //checking if the neighbour actually exists
+      if (x+i>=0 && x+i<GRID_SIZE && y+j>=0 && y+j < GRID_SIZE) {
+        neighbours += grid[x+i][y+j];
       }
     }
+  }
 
   //dont count self
   neighbours -= grid[x][y];
