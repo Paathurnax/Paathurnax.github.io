@@ -13,6 +13,7 @@
 - [Grid Demo](grid)
 - [Rectangle Grid](rect_grid)
 - [character in grid](char_grid)
+- [walkerOOP](walker)
 
 ## Projects
 - [Interactive Scene](interactive_scene)

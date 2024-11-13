@@ -60,11 +60,11 @@ function draw() {
 function stateStuff() {
   //start screen
   if (state === "start") {
-    textFont(font);
-    fill("blue");
-    text("The Game of Life 2D and 3D", width/2, -150);
     grid2dButton.show();
     grid3dButton.show();
+    textFont(font);
+    fill("blue");
+    text("The Game of Life 2D and 3D", width/2, height/3);
   }
 
   //3d grid state
@@ -95,7 +95,7 @@ function gridSwitch2d() {
 function gridSwitch3d() {
   grid3dButton = createButton("click to start with a 3d grid");
   grid3dButton.doubleClicked(changeState2);
-  grid3dButton.position(width, height);
+  grid3dButton.position(width+50, height);
   grid3dButton.draggable();
 }
 
