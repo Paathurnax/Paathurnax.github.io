@@ -40,6 +40,7 @@ function setup() {
     canvas = createCanvas(windowHeight, windowHeight/2, WEBGL);
     canvas.position((windowWidth-width)/2, (windowHeight-height)/2);
   }
+  angleMode(DEGREES);
   //changing the square size to fit the canvas height
   squareSize = height/GRID_SIZE;
 
@@ -62,9 +63,6 @@ function stateStuff() {
   if (state === "start") {
     grid2dButton.show();
     grid3dButton.show();
-    textFont(font);
-    fill("blue");
-    text("The Game of Life 2D and 3D", width/2, height/3);
   }
 
   //3d grid state
@@ -87,7 +85,7 @@ function stateStuff() {
 function gridSwitch2d() {
   grid2dButton = createButton("click to start with a 2d grid");
   grid2dButton.doubleClicked(changeState);
-  grid2dButton.position(width*0.75, height);
+  grid2dButton.position(width*0.7, height);
   grid2dButton.draggable();
 }
 
@@ -95,7 +93,7 @@ function gridSwitch2d() {
 function gridSwitch3d() {
   grid3dButton = createButton("click to start with a 3d grid");
   grid3dButton.doubleClicked(changeState2);
-  grid3dButton.position(width+50, height);
+  grid3dButton.position(width+grid3dButton.width/2, height);
   grid3dButton.draggable();
 }
 
