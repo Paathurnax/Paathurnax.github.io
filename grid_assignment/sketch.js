@@ -21,13 +21,6 @@ let grid3dButton;
 let maxNeighbour = 3;
 let minNeighbour = 2;
 let canvas;
-let font;
-
-
-//loading the text font
-function preload() {
-  font = loadFont("Inconsolata.otf");
-}
 
 
 //creating the canvas and centering it
@@ -35,18 +28,21 @@ function setup() {
   if (windowWidth < windowHeight) {
     canvas = createCanvas(windowWidth, windowWidth/2, WEBGL);
     canvas.position((windowWidth-width)/2, (windowHeight-height)/2);
+    canvas.elt.style.border = "5px solid darkblue";
   }
+
   else {
     canvas = createCanvas(windowHeight, windowHeight/2, WEBGL);
     canvas.position((windowWidth-width)/2, (windowHeight-height)/2);
+    canvas.elt.style.border = "5px solid darkblue";
   }
   angleMode(DEGREES);
   //changing the square size to fit the canvas height
   squareSize = height/GRID_SIZE;
 
   //creating the buttons
-  gridSwitch2d();
-  gridSwitch3d();
+  createButtonFor2D();
+  createButtonFor3D();
 
   //the first state
   state = "start";
@@ -82,19 +78,18 @@ function stateStuff() {
 }
 
 //2d grid button creation
-function gridSwitch2d() {
-  grid2dButton = createButton("click to start with a 2d grid");
-  grid2dButton.doubleClicked(changeState);
-  grid2dButton.position(width*0.7, height);
-  grid2dButton.draggable();
+function createButtonFor2D() {
+  //button text
+  grid2dButton = createButton("Game of Life 2D");
+  grid2dButton.mousePressed(changeState);
+  grid2dButton.position(width - grid2dButton.width/2, height);
 }
 
 //3d grid button creation
-function gridSwitch3d() {
-  grid3dButton = createButton("click to start with a 3d grid");
-  grid3dButton.doubleClicked(changeState2);
-  grid3dButton.position(width+grid3dButton.width/2, height);
-  grid3dButton.draggable();
+function createButtonFor3D() {
+  grid3dButton = createButton("Game of Life 3D");
+  grid3dButton.mousePressed(changeState2);
+  grid3dButton.position(width + grid3dButton.width/2, height);
 }
 
 
@@ -256,9 +251,11 @@ function fillGrid() {
         //filling the grid with the right color
         if (grid2[x][y] === ALIVE) {
           fill("lightblue");
+          stroke("black");
         }
         else if(grid2[x][y] === DEAD) {
           fill("gray");
+          stroke("black");
         }
         //placing the squares
         square(x*squareSize, y*squareSize, squareSize);
