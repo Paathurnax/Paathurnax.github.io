@@ -14,9 +14,9 @@
 - [Rectangle Grid](rect_grid)
 - [character in grid](char_grid)
 - [walkerOOP](walker)
+- [fireworks](fireworks)
 
 ## Projects
 - [Interactive Scene](interactive_scene)
 - [Arrays and Object Notation](array_object)
 - [Grid_Based](grid_assignment)
-- [Major Project](final_project)
