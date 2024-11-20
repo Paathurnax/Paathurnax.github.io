@@ -15,6 +15,7 @@
 - [character in grid](char_grid)
 - [walkerOOP](walker)
 - [fireworks](fireworks)
+- [connected nodes](nodes)
 
 ## Projects
 - [Interactive Scene](interactive_scene)
