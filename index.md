@@ -16,6 +16,7 @@
 - [walkerOOP](walker)
 - [fireworks](fireworks)
 - [connected nodes](nodes)
+- [collide](collide)
 
 ## Projects
 - [Interactive Scene](interactive_scene)
