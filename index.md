@@ -17,6 +17,7 @@
 - [fireworks](fireworks)
 - [connected nodes](nodes)
 - [collide](collide)
+- [local storage](local)
 
 ## Projects
 - [Interactive Scene](interactive_scene)
