@@ -18,6 +18,7 @@
 - [connected nodes](nodes)
 - [collide](collide)
 - [local storage](local)
+- [inheritance](inheritance)
 
 ## Projects
 - [Interactive Scene](interactive_scene)
