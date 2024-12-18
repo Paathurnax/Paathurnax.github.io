@@ -19,6 +19,7 @@
 - [collide](collide)
 - [local storage](local)
 - [inheritance](inheritance)
+- [Fractal Circles](circle)
 
 ## Projects
 - [Interactive Scene](interactive_scene)
